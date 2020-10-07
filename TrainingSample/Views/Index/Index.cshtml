@@ -53,7 +53,11 @@
                             @*@Html.ActionLink("Edit", "Edit", new { id = v.UserId }) |
 
                                 @Html.ActionLink("Delete", "Delete", new { id = v.UserId })*@
-                            <a href="javascript:;" data-toggle="modal" data-target="#editUser" value="Edit User" class="edit-cancel text-uppercase" onclick="EditUser('@v.UserId,@v.FullName,@v.UserEmail,@v.CivilIdNumber,@v.DOB,@v.MobileNo,@v.Address');">Edit</a>
+
+                            @*<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addUser">
+                                    Edit User
+                                </button>*@
+                            <a href="javascript:;" data-toggle="modal" data-target="#editUser" id="#editUser" value="Edit " class="edit-cancel text-uppercase" onclick="return EditUser('@v.UserId','@v.FullName','@v.UserEmail','@v.CivilIdNumber');">Edit</a>
 
                             @*@Html.ActionLink("Delete", "DeleteuS", new { id = v.UserId }, new { @class = "fa fa-close cancel no-margin", @onclick = "return confirm('Are you sure you wish to delete this record?');" })*@
 
@@ -100,9 +104,20 @@
                                     <input class="form-control" id="CivilName" name="CivilName" type="text" />
                                     <span id="civilval" class="field-validation-error"></span>
                                 </div>
+
+
                                 <div class="form-group">
                                     <label>ProfilePic</label>
-                                    <input id="image" type="file" name="ImageFile" required />
+
+                                    <div class="div-file">
+                                        <input id="inputFile" type="file" name="ImageFile" accept="image/*" onchange="encodeImagetoBase64(this)" />
+                                    </div>
+                                    <div>
+                                        <p class="hidden" id="pImageBase64"></p>
+                                    </div>
+                                    <div>
+                                        <img id="image" height="150">
+                                    </div>
                                     <span id="longval" class="field-validation-error"></span>
                                 </div>
                                 <div class="form-group">
@@ -111,7 +126,7 @@
                                     <span id="carval" class="field-validation-error"></span>
                                 </div>
                                 <input type="hidden" id="action" name="action" />
-                                </form>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -123,7 +138,65 @@
         </div>
     </div>
 
+
+
+
+    <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit User Details</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form id="editUser" method="get" enctype="multipart/form-data" onsubmit="return AjaxPost(this)">
+
+                                <div class="form-group">
+                                    <label>User ID</label>
+                                    <input class="form-control" id="gid" name="gid" type="text"  />
+                                    <span id="id" class="field-validation-error"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input class="form-control" id="AName" name="AName" type="text" placeholder="Enter your name " />
+                                    <span id="nameval" class="field-validation-error"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input class="form-control" id="ALat" name="ALat" type="text" placeholder="xyz@gmail.com " />
+                                    <span id="latval" class="field-validation-error"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>CivilIdNumber</label>
+                                    <input class="form-control" id="CivilName" name="CivilName" type="text" />
+                                    <span id="civilval" class="field-validation-error"></span>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label>CarLicense</label>
+                                    <input class="form-control" id="CName" name="CName" type="text" required />
+                                    <span id="carval" class="field-validation-error"></span>
+                                </div>
+                                <input type="hidden" id="action" name="action" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" onclick="return Update();">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
 
 

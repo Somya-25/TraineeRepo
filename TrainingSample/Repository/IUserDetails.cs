@@ -12,5 +12,7 @@ namespace TrainingSample.Repository
         IEnumerable<UserDetails> GetUserDetails();
         void GetInsertDetail(UserDetails insert);
         void GetDeleteDetail(int? id );
+        void PostEditDetail(int? id ,UserDetails insert);
+
     }
 }

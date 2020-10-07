@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -23,13 +24,30 @@ namespace TrainingSample.Controllers
         }
 
         [HttpPost]
-        public ActionResult InsertuS(UserDetails insert)
+        public ActionResult InsertuS(UserDetails insert, string ProfilePic)
         {
 
+            string base64 = ProfilePic.Substring(ProfilePic.IndexOf(',') + 1);
+
+            byte[] chartData = Convert.FromBase64String(base64);
+
+            Image image;
+            using (var ms = new MemoryStream(chartData, 0, chartData.Length))
+            {
+                image = Image.FromStream(ms, true);
+
+            }
+            var randomFileName = Guid.NewGuid().ToString().Substring(0, 4) + ".png";
+             var fullPath = Path.Combine(Server.MapPath("~/Scripts/UserImages/"), randomFileName);
+            
+            image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
+            insert.ProfilePic = randomFileName;
             if (ModelState.IsValid)
             {
                 userDetails.GetInsertDetail(insert);
             }
+
+            
             return RedirectToAction("Index");
         }
 
@@ -41,7 +59,13 @@ namespace TrainingSample.Controllers
 
             return RedirectToAction("Index");
         }
-
+        [HttpPost]
+        public ActionResult EdituS(int? id ,UserDetails insert )
+        {
+            userDetails.PostEditDetail(id,insert);
+            return RedirectToAction("Index ");
+        }
+       
 
 
     }

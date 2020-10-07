@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-//using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.UI.WebControls;
 using TrainingSample.Entities;
@@ -20,7 +19,7 @@ namespace TrainingSample.Repository
             using (var dbContext = new TraineeEntities())
             {
                 List<UserDetail> userDetails = dbContext.UserDetails.Where(x=>x.IsActive==true).ToList();
-               // List<UserDetail> userDetails = dbContext.UserDetails.ToList();
+               //List<UserDetail> userDetails = dbContext.UserDetails.ToList();
                 List<CarDetail> carDetails = dbContext.CarDetails.ToList();
                 List<UserDetails> userViewModels = new List<UserDetails>();
                 foreach (var user in userDetails)
@@ -54,31 +53,27 @@ namespace TrainingSample.Repository
         {
             using (var dbContext = new TraineeEntities())
             {
-               if(insert.FullName != null && insert.ProfilePic !=null)
-                {
-                    string FileName = Path.GetFileNameWithoutExtension(insert.ImageFile.FileName);
+               
+                    //string FileName = Path.GetFileNameWithoutExtension(insert.ImageFile.FileName);
 
 
-                    string FileExtension = Path.GetExtension(insert.ImageFile.FileName);
+                    //string FileExtension = Path.GetExtension(insert.ImageFile.FileName);
 
 
-                    FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
+                    //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
 
 
-                    string UploadPath = ConfigurationManager.AppSettings["UserProfilePic"].ToString();
+                    //string UploadPath = ConfigurationManager.AppSettings["UserProfilePic"].ToString();
 
 
-                    insert.ProfilePic = UploadPath + FileName;
-                    //insert.ProfilePic = FileName;
+                    //insert.ProfilePic = UploadPath + FileName;
+                    ////insert.ProfilePic = FileName;
 
 
-                    insert.ImageFile.SaveAs(insert.ProfilePic);
+                    //insert.ImageFile.SaveAs(insert.ProfilePic);
 
 
-                    
-
-                }
-                var user = new UserDetail()
+                    var user = new UserDetail()
                 {
                     FullName = insert.FullName,
                     UserEmail = insert.UserEmail,
@@ -131,6 +126,7 @@ namespace TrainingSample.Repository
 
         }
 
+        //for delete 
         public void GetDeleteDetail(int? id )
         {
             using (var dbContext = new TraineeEntities())
@@ -149,7 +145,38 @@ namespace TrainingSample.Repository
             
         }
 
+        // for edit 
+        public void PostEditDetail(int? id,UserDetails insert)
+        {
+            using (var dbContext = new TraineeEntities())
+            {
+                var newuserdetail = dbContext.UserDetails.Where(x => x.UserId == insert.UserId).FirstOrDefault();
+                var newcardetail = dbContext.CarDetails.Where(x => x.Id == insert.UserId);
 
 
+                newuserdetail.UserId = insert.UserId;
+                newuserdetail.FullName = insert.FullName;
+                newuserdetail.UserEmail = insert.UserEmail;
+                newuserdetail.PasswordHash = insert.PasswordHash;
+                newuserdetail.CivilIdNumber = insert.CivilIdNumber;
+
+
+
+                //var car = new CarDetail()
+                //{
+                //    userid = insert.Id,
+                //    carlicense = insert.carlicense
+
+                //};
+
+
+
+                dbContext.Entry(newuserdetail).State = EntityState.Modified;
+               // dbContext.Entry(newcardetail).State = EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+        
     }
 }

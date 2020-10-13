@@ -7,10 +7,10 @@ namespace TrainingSample.Entities
 {
     public class UserDetails
     {
-        //    public UserDetails()
-        //    {
-        //        CarDetails = new List<CarDetails>();
-        //    }
+        //public UserDetails()
+        //{
+        //    CarDetails = new List<CarDetails>();
+        //}
         //    public int UserId { get; set; }
         //    public string FullName { get; set; }
         //    public string UserEmail { get; set; }

@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using TrainingSample.Entities;
 using TrainingSample.EntityFramework;
@@ -18,8 +19,8 @@ namespace TrainingSample.Repository
         {
             using (var dbContext = new TraineeEntities())
             {
-                List<UserDetail> userDetails = dbContext.UserDetails.Where(x=>x.IsActive==true).ToList();
-               //List<UserDetail> userDetails = dbContext.UserDetails.ToList();
+                List<UserDetail> userDetails = dbContext.UserDetails.Where(x => x.IsActive == true).ToList();
+                //List<UserDetail> userDetails = dbContext.UserDetails.ToList();
                 List<CarDetail> carDetails = dbContext.CarDetails.ToList();
                 List<UserDetails> userViewModels = new List<UserDetails>();
                 foreach (var user in userDetails)
@@ -46,6 +47,8 @@ namespace TrainingSample.Repository
 
                 }
 
+                userViewModels = userViewModels.Where(x => x.CarLicense != "").ToList();
+
                 return userViewModels;
             }
         }
@@ -53,27 +56,27 @@ namespace TrainingSample.Repository
         {
             using (var dbContext = new TraineeEntities())
             {
-               
-                    //string FileName = Path.GetFileNameWithoutExtension(insert.ImageFile.FileName);
+
+                //string FileName = Path.GetFileNameWithoutExtension(insert.ImageFile.FileName);
 
 
-                    //string FileExtension = Path.GetExtension(insert.ImageFile.FileName);
+                //string FileExtension = Path.GetExtension(insert.ImageFile.FileName);
 
 
-                    //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
+                //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
 
 
-                    //string UploadPath = ConfigurationManager.AppSettings["UserProfilePic"].ToString();
+                //string UploadPath = ConfigurationManager.AppSettings["UserProfilePic"].ToString();
 
 
-                    //insert.ProfilePic = UploadPath + FileName;
-                    ////insert.ProfilePic = FileName;
+                //insert.ProfilePic = UploadPath + FileName;
+                ////insert.ProfilePic = FileName;
 
 
-                    //insert.ImageFile.SaveAs(insert.ProfilePic);
+                //insert.ImageFile.SaveAs(insert.ProfilePic);
 
 
-                    var user = new UserDetail()
+                var user = new UserDetail()
                 {
                     FullName = insert.FullName,
                     UserEmail = insert.UserEmail,
@@ -127,7 +130,7 @@ namespace TrainingSample.Repository
         }
 
         //for delete 
-        public void GetDeleteDetail(int? id )
+        public void GetDeleteDetail(int? id)
         {
             using (var dbContext = new TraineeEntities())
             {
@@ -141,42 +144,68 @@ namespace TrainingSample.Repository
                 }
                 dbContext.SaveChanges();
             }
-                
-            
+
+
         }
 
-        // for edit 
-        public void PostEditDetail(int? id,UserDetails insert)
+        public EditViewModel GetEditDetails(int? Id)
         {
-            using (var dbContext = new TraineeEntities())
+            using (var us = new TraineeEntities())
             {
-                var newuserdetail = dbContext.UserDetails.Where(x => x.UserId == insert.UserId).FirstOrDefault();
-                var newcardetail = dbContext.CarDetails.Where(x => x.Id == insert.UserId);
+                var viewModel = us.UserDetails.Where(x => x.UserId == Id).FirstOrDefault();
+                var cardetails = us.CarDetails.Where(x => x.UserId == Id).Select(y => new CarDetailsInfo
+                {
+                    Id = y.Id,
+                    CarNumberPlate = y.CarLicense
+                }).ToList();
 
+                var userDetails = new EditViewModel
+                {
+                    UserId = viewModel.UserId,
+                    UserEmail = viewModel.UserEmail,
+                    FullName = viewModel.FullName,
+                    CivilIdNumber = viewModel.CivilIdNumber
+                };
+                userDetails.CarDetails.AddRange(cardetails);
+                return userDetails;
 
-                newuserdetail.UserId = insert.UserId;
-                newuserdetail.FullName = insert.FullName;
-                newuserdetail.UserEmail = insert.UserEmail;
-                newuserdetail.PasswordHash = insert.PasswordHash;
-                newuserdetail.CivilIdNumber = insert.CivilIdNumber;
-
-
-
-                //var car = new CarDetail()
-                //{
-                //    userid = insert.Id,
-                //    carlicense = insert.carlicense
-
-                //};
-
-
-
-                dbContext.Entry(newuserdetail).State = EntityState.Modified;
-               // dbContext.Entry(newcardetail).State = EntityState.Modified;
-
-                dbContext.SaveChanges();
             }
+
+
         }
-        
+      
+        public void PostEditDetail(EditViewModel insert)
+        {
+            using (var us = new TraineeEntities())
+            {
+                var viewModel = us.UserDetails.Where(x => x.UserId == insert.UserId).FirstOrDefault();
+                var viewModel1 = us.CarDetails.Where(x => x.UserId == insert.UserId).ToList();
+                viewModel.FullName = insert.FullName;
+                viewModel.UserEmail = insert.UserEmail;
+                viewModel.CivilIdNumber = insert.CivilIdNumber;
+
+
+                us.Entry(viewModel).State = EntityState.Modified;
+
+                foreach (var car in insert.CarDetails)
+                {
+                    var userCar = viewModel1.Where(x => x.Id == car.Id).FirstOrDefault();
+
+                    userCar.CarLicense = car.CarNumberPlate;
+
+                    us.Entry(userCar).State = EntityState.Modified;
+                }
+
+                us.SaveChanges();
+
+            }
+
+
+        }
+
+
+
+
+
     }
 }

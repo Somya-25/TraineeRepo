@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TrainingSample.Entities;
+using TrainingSample.EntityFramework;
 using TrainingSample.Repository;
 
 namespace TrainingSample.Controllers
@@ -16,11 +17,15 @@ namespace TrainingSample.Controllers
     {
         IUserDetails userDetails = new UserDetailsRepository();
         // GET: Index
-        public ActionResult Index(int page = 1, int pageSize = 10)
+        public ActionResult About()
+        {
+            return View();
+        }
+        public ActionResult GetData()
         {
             var udetails = userDetails.GetUserDetails();
-            PagedList<UserDetails> model = new PagedList<UserDetails>(udetails, page, pageSize);
-            return View(model);
+            return Json(new { data = udetails }, JsonRequestBehavior.AllowGet);
+
         }
 
         [HttpPost]
@@ -38,8 +43,8 @@ namespace TrainingSample.Controllers
 
             }
             var randomFileName = Guid.NewGuid().ToString().Substring(0, 4) + ".png";
-             var fullPath = Path.Combine(Server.MapPath("~/Scripts/UserImages/"), randomFileName);
-            
+            var fullPath = Path.Combine(Server.MapPath("~/Scripts/UserImages/"), randomFileName);
+
             image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
             insert.ProfilePic = randomFileName;
             if (ModelState.IsValid)
@@ -47,7 +52,7 @@ namespace TrainingSample.Controllers
                 userDetails.GetInsertDetail(insert);
             }
 
-            
+
             return RedirectToAction("Index");
         }
 
@@ -59,14 +64,20 @@ namespace TrainingSample.Controllers
 
             return RedirectToAction("Index");
         }
-        [HttpPost]
-        public ActionResult EdituS(int? id ,UserDetails insert )
+
+        [HttpGet]
+        public ActionResult Edit(int? id )
         {
-            userDetails.PostEditDetail(id,insert);
-            return RedirectToAction("Index ");
+            var user =userDetails.GetEditDetails(id);
+            return Json(new { UserId = user.UserId, FullName = user.FullName, UserEmail = user.UserEmail, CivilIdNumber=user.CivilIdNumber, CarDetails = user.CarDetails }, JsonRequestBehavior.AllowGet);
         }
        
-
-
+        [HttpPost]
+        public ActionResult Edit(EditViewModel insert)
+        {
+            userDetails.PostEditDetail(insert);
+            return RedirectToAction("Index ");
+        }
     }
+
 }

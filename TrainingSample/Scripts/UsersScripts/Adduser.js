@@ -3,16 +3,16 @@
     var userName = $("#AName").val();
     var Email = $("#ALat").val();
     var civilid = $("#CivilName").val();
-    var carLicense = $("#CName"). val();
+    var carLicense = $("#CName").val();
     var imagenBase64 = $("#pImageBase64").html();
-    
+
     $.ajax({
         url: '/Index/InsertuS',
         type: 'POST',
         data: JSON.stringify({
             FullName: userName,
             UserEmail: Email,
-           
+
             ProfilePic: imagenBase64,
             CivilIdNumber: civilid,
             CarLicense: carLicense
@@ -65,52 +65,102 @@ function DeleteUser(Id) {
 
 }
 
+function EditUserDetails(Id) {
+    debugger;
+    $.ajax({
+        url: '/Index/Edit?Id=' + Id,
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application/json',
+        async: true,
+        success: function (data) {
+            debugger;
+            console.log(data);
+
+            $('#gid1').val(data.UserId);
+            $('#AName1').val(data.FullName);
+            $('#ALat1').val(data.UserEmail);
+            $('#CivilName1').val(data.CivilIdNumber);
 
 
+            var sno = 0;
+            var div = $('#CName1');
+            div.empty();
 
-function EditUser(id, name, email, carLicense) {
-    //debugger;
-    $('input#gid.form-control').val(id);
-    $('input#AName.form-control').val(name);
-    $('input#ALat.form-control').val(email);
-    $('input#CName.form-control').val(carLicense);
-    $('input#CivilName.form-control').val(CivilIdNumber);
-    
+            data.CarDetails.forEach(function (event) {
+
+                div.append("<label>CarLicense" + (sno + 1) + "</label>" +
+                    "<input class='form-control' id='" + event.Id + "' name='CName1' type='text' value='" + event.CarNumberPlate + "' />");
+
+                sno++;
+            });
+        }
+        //$("#editUser").hide();
+        //$("#editUser").addClass('hide');
+
+
+    });
 }
-
 
 
 function Update() {
     debugger;
-    // $('input#gid').val(id);
-    // var name = $('#AName.form-control').val(name);
-    //var email = $('#ALat.form-control').val(email);
-    //var carLicense = $('#ACar.form-control').val(carLicense);
-    var id = $("#gid").val();
+    var U = $("#gid1").val();
+    var userName = $("#AName1").val();
+    var Email = $("#ALat1").val();
+    var CivilIdNumber = $("#CivilName1").val();
+    var v = Array();
+    $("input[name='CName1']").each(function () {
+        v.push($(this).attr('id'));
+        console.log(v);
+    });
+
+
+    var c = [];
+    v.forEach(function (value) {
+    c.push({
+           Id: value,
+            CarLicenseValue: $("#" + value).val()
+
+        });
+        console.log(c);
+    });
+
+
+
+    //c.push([this.attr(id), $(this).val()]);
+
     
-    var name = $("#AName").val();
-    var email = $("#ALat").val();
-    var carLicense = $("#CName").val();
-    var CivilIdNumber = $("#CivilName").val();
 
     $.ajax({
-        url: '/Index/EdituS',
+        url: '/Index/Edit',
         type: 'POST',
         data: JSON.stringify({
-            UserId: id,
-            FullName: name,
-            UserEmail: email,
-            CarLicense: carLicense,
-            CivilIdNumber: CivilIdNumber
-
+            UserId: U,
+            FullName: userName,
+            UserEmail: Email,
+            CivilIdNumber: CivilIdNumber,
+            CarDetails: c,
         }),
         dataType: 'json',
         contentType: 'application/json',
         async: false,
         success: function (data) {
-            $("#editUser").hide();
-            $("#editUser").addClass('hide');
+            window.reload();
+            console.log(data.success);
+            if (data.success === 1) {
+                // loop through all modal's and call the Bootstrap
+                alert("conditions satisfied, submiting the form.");
+                document.forms['editform'].submit();
+                window.close();
+            } else {
+                console.log('failure');
+            }
+
+           
         }
 
     });
 }
+
+

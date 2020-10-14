@@ -27,6 +27,8 @@
             //$("#addUser").addClass('hide');
             $('#addUser').modal('hide');
             //$('#addUser').Hide();
+            location.reload();
+           // window.location.reload(true);
 
         }
 
@@ -56,7 +58,7 @@ function DeleteUser(Id) {
             contentType: 'application/json',
             async: false,
             success: function (data) {
-                window.reload();
+                location.reload();
                 //$("#addUser").hide();
                 //$("#addUser").addClass('hide');
             }
@@ -121,7 +123,7 @@ function Update() {
     v.forEach(function (value) {
     c.push({
            Id: value,
-            CarLicenseValue: $("#" + value).val()
+        CarNumberPlate: $("#" + value).val()
 
         });
         console.log(c);
@@ -151,6 +153,7 @@ function Update() {
             //$("#addUser").addClass('hide');
             $('#editUser').modal('hide');
             //$('#addUser').Hide();
+            location.reload();
 
         }
         

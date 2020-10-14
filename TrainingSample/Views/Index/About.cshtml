@@ -16,6 +16,8 @@
         <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addUser">
             Add User
         </button>
+        <br/>
+        <br/>
         <div id="dataTable_wrapper"></div>
         <table id="dataTable" class="table table-bordered table-striped">
             <thead>
@@ -114,7 +116,7 @@
 
                                 <div class="form-group">
 
-                                    <input class="form-control hidden " id="gid1" name="gid" type="text" />
+                                    <input class="form-control hidden " style="display:none" id="gid1" name="gid" type="text" />
                                     <span id="id" class="field-validation-error"></span>
                                 </div>
 
@@ -188,22 +190,23 @@
                 { "data": "UserEmail" },
                 { "data": "CivilIdNumber" },
                 { "data": "CarLicense" },
-                {
-                    mRender: function (data, type, row) {
+                //{
+                //    mRender: function (data, type, row) {
 
-                        return '<a href="javascript:;" data-toggle="modal" data-target="#editUser" value="Edit User" class="edit-cancel text-uppercase" onclick="return EditUserDetails(' + row.UserId + ')">Edit</a>'
-                    }
-                },
-                {
-                    mRender: function (data, type, row) {
+                //        return '<a href="javascript:;" data-toggle="modal" data-target="#editUser" value="Edit User" class="edit-cancel text-uppercase" onclick="return EditUserDetails(' + row.UserId + ')">Edit</a>'
+                //    }
+                //},
+                //{
+                //    mRender: function (data, type, row) {
 
-                        return '<a href="javascript:;"   onclick="return DeleteUser(' + row.UserId + ')">Delete</a>'
-                    }
-                }
+                //        return '<a href="javascript:;"   onclick="return DeleteUser(' + row.UserId + ')">Delete</a>'
+                //    }
+                //}
 
-                //{ 'data': null, title: 'Action', wrap: true, "render": function (data) { return '<div class="btn-group"> <button type="button" onclick=" EditUserDetails(' + data.UserId + ')" value="0" class="btn btn-info" data-toggle="modal" data-target="#editUser">Edit</button></div>' } },
-                //  { 'data': null, title: 'Action', wrap: true, "render": function (data) { return '<div class="btn-group"> <button type="button" onclick="DeleteUser(' + data.UserId + ')" value="0" class="btn btn-info" >Delete</button></div>' } }
-            ]
+                { 'data': null, title: 'Action', wrap: true, "render": function (data) { return '<div class="btn-group"> <button type="button" onclick="EditUserDetails(' + data.UserId + ')" value="0" class="btn btn-info" data-toggle="modal" data-target="#editUser">Edit</button></div>' } },
+                { 'data': null, title: 'Action', wrap: true, "render": function (data) { return '<div class="btn-group"> <button type="button" onclick="DeleteUser(' + data.UserId + ')" value="0" class="btn btn-info" >Delete</button></div>' } }
+
+                          ]
         });
     });
 </script>

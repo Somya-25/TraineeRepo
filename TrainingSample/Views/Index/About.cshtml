@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
@@ -73,7 +72,7 @@
                                         <input id="inputFile" type="file" name="ImageFile" accept="image/*" onchange="encodeImagetoBase64(this)" />
                                     </div>
                                     <div>
-                                        <p class="hidden" id="pImageBase64"></p>
+                                        <p style="display:none" id="pImageBase64"></p>
                                     </div>
                                     <div>
                                         <img id="image" height="150">
@@ -114,8 +113,8 @@
                             <form id="editUser" method="get" enctype="multipart/form-data" name="editform" onsubmit="return AjaxPost(this)">
 
                                 <div class="form-group">
-                                    @*<label>User ID</label>*@
-                                    <input class="form-control" type="hidden" id="gid1" name="gid" type="text" />
+
+                                    <input class="form-control hidden " id="gid1" name="gid" type="text" />
                                     <span id="id" class="field-validation-error"></span>
                                 </div>
 
@@ -146,7 +145,7 @@
                                 </div>
 
 
-                                <input type="hidden" id="action" name="action" />
+                                <input type="hidden" id="action1" name="action" />
                             </form>
                         </div>
                     </div>

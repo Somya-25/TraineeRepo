@@ -16,7 +16,8 @@ namespace TrainingSample.Controllers
     public class IndexController : Controller
     {
         IUserDetails userDetails = new UserDetailsRepository();
-        // GET: Index
+
+
         public ActionResult About()
         {
             return View();
@@ -31,29 +32,36 @@ namespace TrainingSample.Controllers
         [HttpPost]
         public ActionResult InsertuS(UserDetails insert, string ProfilePic)
         {
-
-            string base64 = ProfilePic.Substring(ProfilePic.IndexOf(',') + 1);
-
-            byte[] chartData = Convert.FromBase64String(base64);
-
-            Image image;
-            using (var ms = new MemoryStream(chartData, 0, chartData.Length))
+            try
             {
-                image = Image.FromStream(ms, true);
+                string base64 = ProfilePic.Substring(ProfilePic.IndexOf(',') + 1);
 
+                byte[] chartData = Convert.FromBase64String(base64);
+
+                Image image;
+                using (var ms = new MemoryStream(chartData, 0, chartData.Length))
+                {
+                    image = Image.FromStream(ms, true);
+
+                }
+                var randomFileName = Guid.NewGuid().ToString().Substring(0, 4) + ".png";
+                var fullPath = Path.Combine(Server.MapPath("~/Scripts/UserImages/"), randomFileName);
+
+                image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
+                insert.ProfilePic = randomFileName;
+                if (ModelState.IsValid)
+                {
+                    userDetails.GetInsertDetail(insert);
+                }
+
+                return Json(new { data = true });
             }
-            var randomFileName = Guid.NewGuid().ToString().Substring(0, 4) + ".png";
-            var fullPath = Path.Combine(Server.MapPath("~/Scripts/UserImages/"), randomFileName);
-
-            image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
-            insert.ProfilePic = randomFileName;
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                userDetails.GetInsertDetail(insert);
+                throw new Exception(ex.Message.ToString());
             }
 
 
-            return RedirectToAction("Index");
         }
 
         //delete 
@@ -66,17 +74,17 @@ namespace TrainingSample.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int? id )
+        public ActionResult Edit(int? id)
         {
-            var user =userDetails.GetEditDetails(id);
-            return Json(new { UserId = user.UserId, FullName = user.FullName, UserEmail = user.UserEmail, CivilIdNumber=user.CivilIdNumber, CarDetails = user.CarDetails }, JsonRequestBehavior.AllowGet);
+            var user = userDetails.GetEditDetails(id);
+            return Json(new { UserId = user.UserId, FullName = user.FullName, UserEmail = user.UserEmail, CivilIdNumber = user.CivilIdNumber, CarDetails = user.CarDetails }, JsonRequestBehavior.AllowGet);
         }
-       
+
         [HttpPost]
         public ActionResult Edit(EditViewModel insert)
         {
             userDetails.PostEditDetail(insert);
-            return RedirectToAction("Index ");
+            return Json(new { data = true });
         }
     }
 

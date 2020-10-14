@@ -21,11 +21,12 @@
         }),
         dataType: 'json',
         contentType: 'application/json',
-        async: false,
+        async: true,
         success: function (data) {
-            //$("#addUser").hide();
+            debugger;
             //$("#addUser").addClass('hide');
             $('#addUser').modal('hide');
+            //$('#addUser').Hide();
 
         }
 
@@ -144,21 +145,15 @@ function Update() {
         }),
         dataType: 'json',
         contentType: 'application/json',
-        async: false,
+        async: true,
         success: function (data) {
-            window.reload();
-            console.log(data.success);
-            if (data.success === 1) {
-                // loop through all modal's and call the Bootstrap
-                alert("conditions satisfied, submiting the form.");
-                document.forms['editform'].submit();
-                window.close();
-            } else {
-                console.log('failure');
-            }
+            debugger;
+            //$("#addUser").addClass('hide');
+            $('#editUser').modal('hide');
+            //$('#addUser').Hide();
 
-           
         }
+        
 
     });
 }
